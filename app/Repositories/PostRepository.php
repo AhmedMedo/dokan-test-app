@@ -15,6 +15,7 @@ interface PostRepositoryInterface
     public function onlyTrashed(): \Illuminate\Database\Eloquent\Collection;
     public function restore(int|string $id): ?Post;
     public function forceDelete(int|string $id): void;
+    public function queryWithRelations(array $relations = []): \Illuminate\Database\Eloquent\Builder;
 }
 
 class PostRepository implements PostRepositoryInterface
@@ -66,5 +67,10 @@ class PostRepository implements PostRepositoryInterface
     {
         $post = Post::onlyTrashed()->findOrFail($id);
         $post->forceDelete();
+    }
+
+    public function queryWithRelations(array $relations = []): \Illuminate\Database\Eloquent\Builder
+    {
+        return Post::with($relations);
     }
 }

@@ -30,4 +30,20 @@ class PostResource extends JsonResource
             'created_at' => $this->created_at,
         ];
     }
+
+    public static function collection($resource)
+    {
+        $response = parent::collection($resource);
+        if (method_exists($resource, 'total')) {
+            $response->additional([
+                'meta' => [
+                    'current_page' => $resource->currentPage(),
+                    'last_page' => $resource->lastPage(),
+                    'per_page' => $resource->perPage(),
+                    'total' => $resource->total(),
+                ],
+            ]);
+        }
+        return $response;
+    }
 }

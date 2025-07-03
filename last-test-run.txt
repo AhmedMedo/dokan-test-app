@@ -1,0 +1,71 @@
+
+   PASS  Tests\Unit\CategoryApiTest
+  ✓ example                                                              0.11s  
+  ✓ list posts by category                                               0.04s  
+
+   PASS  Tests\Unit\CommentApiTest
+  ✓ example                                                              0.01s  
+  ✓ post comment authenticated                                           0.02s  
+  ✓ create comment validation error                                      0.01s  
+
+   PASS  Tests\Unit\CommentPolicyTest
+  ✓ comment owner can update and delete                                  0.01s  
+  ✓ non owner cannot update or delete                                    0.01s  
+
+   PASS  Tests\Unit\ExampleTest
+  ✓ that true is true
+
+   FAIL  Tests\Unit\PostApiTest
+  ✓ list posts                                                           0.01s  
+  ✓ create post authenticated                                            0.01s  
+  ✓ create post unauthenticated fails                                    0.01s  
+  ⨯ show post with comments                                              0.01s  
+  ✓ post owner can update and delete                                     0.01s  
+  ✓ non owner cannot update or delete                                    0.01s  
+  ✓ create post validation error                                         0.01s  
+
+   PASS  Tests\Feature\CommentFeatureTest
+  ✓ authenticated user can post comment                                  0.01s  
+
+   PASS  Tests\Feature\ExampleTest
+  ✓ the application returns a successful response                        0.01s  
+
+   FAIL  Tests\Feature\PostFeatureTest
+  ✓ example                                                              0.01s  
+  ✓ authenticated user can create post                                   0.01s  
+  ✓ unauthenticated user cannot create post                              0.01s  
+  ⨯ view post with comments                                              0.01s  
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Unit\PostApiTest > show post with comments                     
+  Failed asserting that an array has the key 'comments'.
+
+  at tests/Unit/PostApiTest.php:80
+     76▕         $post = Post::factory()->create(['user_id' => $user->id, 'category_id' => $category->id]);
+     77▕         $commentUser = User::factory()->create();
+     78▕         $post->comments()->create(['content' => 'Nice post!', 'user_id' => $commentUser->id]);
+     79▕         $response = $this->getJson('/api/posts/' . $post->id);
+  ➜  80▕         $response->assertOk()->assertJsonStructure(['data', 'comments']);
+     81▕     }
+     82▕ 
+     83▕     public function test_post_owner_can_update_and_delete()
+     84▕     {
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\PostFeatureTest > view post with comments              
+  Failed asserting that an array has the key 'comments'.
+
+  at tests/Feature/PostFeatureTest.php:60
+     56▕         $post = Post::factory()->create(['user_id' => $user->id, 'category_id' => $category->id]);
+     57▕         $commentUser = User::factory()->create();
+     58▕         $comment = Comment::factory()->create(['user_id' => $commentUser->id, 'post_id' => $post->id, 'content' => 'Nice feature!']);
+     59▕         $response = $this->getJson('/api/posts/' . $post->id);
+  ➜  60▕         $response->assertOk()->assertJsonStructure(['data', 'comments']);
+     61▕         $this->assertEquals('Nice feature!', $response->json('comments.0.content'));
+     62▕     }
+     63▕ }
+     64▕
+
+
+  Tests:    2 failed, 19 passed (66 assertions)
+  Duration: 0.37s
+

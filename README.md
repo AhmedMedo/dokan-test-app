@@ -9,13 +9,14 @@
 
 # Dokan Test App
 
-A simple Laravel REST API for managing posts, categories, comments, and users. This project demonstrates a typical blog-like backend with authentication, policies, and resourceful endpoints.
+A simple Laravel REST API for managing posts, categories, comments, and users. This project demonstrates a typical blog-like backend with authentication, policies, resourceful endpoints, and interactive API documentation via Swagger.
 
 ## Features
 - User registration and authentication
 - CRUD for Posts, Categories, and Comments
 - Policy-based authorization
 - JSON API responses
+- Interactive API documentation (Swagger/OpenAPI)
 - Comprehensive test suite
 
 ## Getting Started
@@ -28,40 +29,47 @@ A simple Laravel REST API for managing posts, categories, comments, and users. T
 ### Installation
 ```bash
 # Clone the repository
- git clone <repo-url>
- cd dokan-test-app
+git clone <repo-url>
+cd dokan-test-app
 
 # Install dependencies
- composer install
+composer install
 
 # Copy and edit environment variables
- cp .env.example .env
- php artisan key:generate
+cp .env.example .env
+php artisan key:generate
 
 # Run migrations and seeders
- php artisan migrate --seed
+php artisan migrate --seed
 
 # (Optional) Run the development server
- php artisan serve
+php artisan serve
 ```
+
+## API Documentation (Swagger)
+
+This project uses [L5 Swagger](https://github.com/DarkaOnLine/L5-Swagger) for OpenAPI documentation.
+
+- **Interactive API docs:** Visit [`/api/documentation`](http://localhost:8000/api/documentation) after running the server.
+- You can view all endpoints, schemas, and try requests directly from the browser.
+- The OpenAPI spec is generated from PHP annotations in the codebase (see `app/Swagger/Schemas.php` and controller classes).
 
 ## API Endpoints
 
-### Posts
-- `GET    /api/posts`           — List all posts
-- `POST   /api/posts`           — Create a new post (auth required)
-- `GET    /api/posts/{id}`      — Show a post with comments
-- `PUT    /api/posts/{id}`      — Update a post (owner only)
-- `DELETE /api/posts/{id}`      — Delete a post (owner only)
-
-### Comments
-- `POST   /api/posts/{id}/comments` — Add a comment to a post (auth required)
-- `PUT    /api/comments/{id}`       — Update a comment (owner only)
-- `DELETE /api/comments/{id}`       — Delete a comment (owner only)
-
-### Categories
-- `GET    /api/categories`          — List all categories
+### Public Endpoints
+- `GET    /api/posts`                 — List all posts
+- `GET    /api/posts/{id}`            — Show a post with comments
 - `GET    /api/categories/{id}/posts` — List posts by category
+- `GET    /api/comments`              — List all comments
+- `GET    /api/comments/{id}`         — Show a single comment
+
+### Protected Endpoints (require auth)
+- `POST   /api/posts`                 — Create a new post
+- `POST   /api/posts/{id}/comments`   — Add a comment to a post
+- `PUT    /api/posts/{id}`            — Update a post (owner only)
+- `DELETE /api/posts/{id}`            — Delete a post (owner only)
+- `PUT    /api/comments/{id}`         — Update a comment (owner only)
+- `DELETE /api/comments/{id}`         — Delete a comment (owner only)
 
 ## Example Requests
 

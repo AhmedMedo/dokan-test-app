@@ -17,4 +17,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/posts/{id}', \App\Http\Controllers\PostDeleteHandler::class);
     Route::put('/comments/{id}', \App\Http\Controllers\CommentUpdateHandler::class);
     Route::delete('/comments/{id}', \App\Http\Controllers\CommentDeleteHandler::class);
-}); 
+});
+
+// Auth endpoint
+Route::post('/login', \App\Http\Controllers\LoginHandler::class); 

@@ -13,7 +13,7 @@ class CategoryRepository
 
     public function find($id)
     {
-        return Category::find($id);
+        return Category::query()->findOrFail($id);
     }
 
     public function create(array $data)
@@ -31,4 +31,4 @@ class CategoryRepository
     {
         $category->delete();
     }
-} 
+}

@@ -13,7 +13,7 @@ class PostRepository
 
     public function find($id)
     {
-        return Post::find($id);
+        return Post::query()->findOrFail($id);
     }
 
     public function create(array $data)
@@ -21,14 +21,37 @@ class PostRepository
         return Post::create($data);
     }
 
-    public function update(Post $post, array $data)
+    public function update(Post $post, array $data): Post
     {
         $post->update($data);
         return $post;
     }
 
-    public function delete(Post $post)
+    public function delete(Post $post): void
     {
         $post->delete();
     }
-} 
+
+    public function withTrashed()
+    {
+        return Post::withTrashed()->get();
+    }
+
+    public function onlyTrashed()
+    {
+        return Post::onlyTrashed()->get();
+    }
+
+    public function restore($id): ?Post
+    {
+        $post = Post::onlyTrashed()->findOrFail($id);
+        $post->restore();
+        return $post;
+    }
+
+    public function forceDelete($id): void
+    {
+        $post = Post::onlyTrashed()->findOrFail($id);
+        $post->forceDelete();
+    }
+}

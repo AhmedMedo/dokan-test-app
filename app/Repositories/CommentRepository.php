@@ -13,7 +13,7 @@ class CommentRepository
 
     public function find($id)
     {
-        return Comment::find($id);
+        return Comment::query()->findOrFail($id);
     }
 
     public function create(array $data)
@@ -31,4 +31,27 @@ class CommentRepository
     {
         $comment->delete();
     }
-} 
+
+    public function withTrashed()
+    {
+        return Comment::withTrashed()->get();
+    }
+
+    public function onlyTrashed()
+    {
+        return Comment::onlyTrashed()->get();
+    }
+
+    public function restore($id): ?Comment
+    {
+        $comment = Comment::onlyTrashed()->findOrFail($id);
+        $comment->restore();
+        return $comment;
+    }
+
+    public function forceDelete($id): void
+    {
+        $comment = Comment::onlyTrashed()->findOrFail($id);
+        $comment->forceDelete();
+    }
+}

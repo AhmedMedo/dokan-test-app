@@ -21,7 +21,7 @@ class PostFeatureTest extends TestCase
     {
         $response = $this->get('/');
 
-        $response->assertStatus(200);
+        $response->assertOk();
     }
 
     public function test_authenticated_user_can_create_post()

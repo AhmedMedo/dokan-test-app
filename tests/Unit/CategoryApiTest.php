@@ -28,7 +28,7 @@ class CategoryApiTest extends TestCase
         Post::factory()->count(2)->create(['user_id' => $user->id, 'category_id' => $category->id]);
         Post::factory()->count(1)->create(['user_id' => $user->id, 'category_id' => $otherCategory->id]);
         $response = $this->getJson('/api/categories/' . $category->id . '/posts');
-        $response->assertStatus(200)
+        $response->assertOk()
             ->assertJsonStructure(['data' => [['id', 'title', 'content', 'user', 'category', 'comment_count', 'created_at']]]);
         $this->assertCount(2, $response->json('data'));
     }

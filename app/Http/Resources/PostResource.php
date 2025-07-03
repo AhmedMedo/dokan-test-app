@@ -26,7 +26,7 @@ class PostResource extends JsonResource
                 'id' => $this->category->id,
                 'name' => $this->category->name,
             ],
-            'comment_count' => $this->comments()->count(),
+            'comment_count' => $this->comments->count(),
             'created_at' => $this->created_at,
         ];
     }

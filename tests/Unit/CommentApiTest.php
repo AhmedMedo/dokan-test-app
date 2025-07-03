@@ -29,7 +29,7 @@ class CommentApiTest extends TestCase
             'content' => 'Great post!'
         ];
         $response = $this->actingAs($user)->postJson('/api/posts/' . $post->id . '/comments', $payload);
-        $response->assertStatus(201)->assertJsonPath('data.content', 'Great post!');
+        $response->assertCreated()->assertJsonPath('data.content', 'Great post!');
     }
 
     public function test_create_comment_validation_error()
@@ -41,7 +41,7 @@ class CommentApiTest extends TestCase
             'content' => '', // invalid
         ];
         $response = $this->actingAs($user)->postJson('/api/posts/' . $post->id . '/comments', $payload);
-        $response->assertStatus(422)
+        $response->assertUnprocessable()
             ->assertJsonStructure(['message', 'errors' => ['content']]);
     }
 }

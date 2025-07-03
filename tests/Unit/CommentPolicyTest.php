@@ -21,9 +21,9 @@ class CommentPolicyTest extends TestCase
         $comment = Comment::factory()->create(['user_id' => $user->id, 'post_id' => $post->id]);
         $updatePayload = ['content' => 'Updated comment'];
         $updateResponse = $this->actingAs($user)->putJson('/api/comments/' . $comment->id, $updatePayload);
-        $updateResponse->assertStatus(200)->assertJsonPath('data.content', 'Updated comment');
+        $updateResponse->assertOk()->assertJsonPath('data.content', 'Updated comment');
         $deleteResponse = $this->actingAs($user)->deleteJson('/api/comments/' . $comment->id);
-        $deleteResponse->assertStatus(204);
+        $deleteResponse->assertNoContent();
     }
 
     public function test_non_owner_cannot_update_or_delete()
@@ -35,8 +35,8 @@ class CommentPolicyTest extends TestCase
         $comment = Comment::factory()->create(['user_id' => $owner->id, 'post_id' => $post->id]);
         $updatePayload = ['content' => 'Hacked comment'];
         $updateResponse = $this->actingAs($other)->putJson('/api/comments/' . $comment->id, $updatePayload);
-        $updateResponse->assertStatus(403);
+        $updateResponse->assertForbidden();
         $deleteResponse = $this->actingAs($other)->deleteJson('/api/comments/' . $comment->id);
-        $deleteResponse->assertStatus(403);
+        $deleteResponse->assertForbidden();
     }
 }

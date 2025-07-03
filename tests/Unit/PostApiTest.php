@@ -16,9 +16,32 @@ class PostApiTest extends TestCase
     {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        Post::factory()->count(2)->create(['user_id' => $user->id, 'category_id' => $category->id]);
+        $posts = Post::factory()->count(2)->create(['user_id' => $user->id, 'category_id' => $category->id]);
+
+        foreach ($posts as $post) {
+            \App\Models\Comment::factory()->count(3)->create(['post_id' => $post->id, 'user_id' => $user->id]);
+        }
+
         $response = $this->getJson('/api/posts');
-        $response->assertStatus(200)->assertJsonStructure(['data' => [['id', 'title', 'content', 'user', 'category', 'comment_count', 'created_at']]]);
+        $response->assertOk()
+            ->assertJsonStructure([
+                'data' => [
+                    [
+                        'id',
+                        'title',
+                        'content',
+                        'user',
+                        'category',
+                        'comment_count',
+                        'created_at'
+                    ]
+                ]
+            ]);
+
+        $data = $response->json('data');
+        foreach ($data as $postData) {
+            $this->assertEquals(3, $postData['comment_count']);
+        }
     }
 
     public function test_create_post_authenticated()
@@ -31,7 +54,7 @@ class PostApiTest extends TestCase
             'category_id' => $category->id,
         ];
         $response = $this->actingAs($user)->postJson('/api/posts', $payload);
-        $response->assertStatus(201)->assertJsonPath('data.title', 'Test Post');
+        $response->assertCreated()->assertJsonPath('data.title', 'Test Post');
     }
 
     public function test_create_post_unauthenticated_fails()
@@ -43,7 +66,7 @@ class PostApiTest extends TestCase
             'category_id' => $category->id,
         ];
         $response = $this->postJson('/api/posts', $payload);
-        $response->assertStatus(401);
+        $response->assertUnauthorized();
     }
 
     public function test_show_post_with_comments()
@@ -54,7 +77,7 @@ class PostApiTest extends TestCase
         $commentUser = User::factory()->create();
         $post->comments()->create(['content' => 'Nice post!', 'user_id' => $commentUser->id]);
         $response = $this->getJson('/api/posts/' . $post->id);
-        $response->assertStatus(200)->assertJsonStructure(['data', 'comments']);
+        $response->assertOk()->assertJsonStructure(['data', 'comments']);
     }
 
     public function test_post_owner_can_update_and_delete()

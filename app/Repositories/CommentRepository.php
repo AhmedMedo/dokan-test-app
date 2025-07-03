@@ -4,52 +4,65 @@ namespace App\Repositories;
 
 use App\Models\Comment;
 
-class CommentRepository
+interface CommentRepositoryInterface
 {
-    public function all()
+    public function all(): \Illuminate\Database\Eloquent\Collection;
+    public function find(int|string $id): Comment;
+    public function create(array $data): Comment;
+    public function update(Comment $comment, array $data): Comment;
+    public function delete(Comment $comment): void;
+    public function withTrashed(): \Illuminate\Database\Eloquent\Collection;
+    public function onlyTrashed(): \Illuminate\Database\Eloquent\Collection;
+    public function restore(int|string $id): ?Comment;
+    public function forceDelete(int|string $id): void;
+}
+
+class CommentRepository implements CommentRepositoryInterface
+{
+    public function all(): \Illuminate\Database\Eloquent\Collection
     {
         return Comment::all();
     }
 
-    public function find($id)
+    public function find(int|string $id): Comment
     {
         return Comment::query()->findOrFail($id);
     }
 
-    public function create(array $data)
+    public function create(array $data): Comment
     {
         return Comment::create($data);
     }
 
-    public function update(Comment $comment, array $data)
+    public function update(Comment $comment, array $data): Comment
     {
         $comment->update($data);
         return $comment;
     }
 
-    public function delete(Comment $comment)
+    public function delete(Comment $comment): void
     {
         $comment->delete();
     }
 
-    public function withTrashed()
+    public function withTrashed(): \Illuminate\Database\Eloquent\Collection
     {
         return Comment::withTrashed()->get();
     }
 
-    public function onlyTrashed()
+    public function onlyTrashed(): \Illuminate\Database\Eloquent\Collection
     {
         return Comment::onlyTrashed()->get();
     }
 
-    public function restore($id): ?Comment
+    public function restore(int|string $id): ?Comment
     {
         $comment = Comment::onlyTrashed()->findOrFail($id);
         $comment->restore();
         return $comment;
     }
 
-    public function forceDelete($id): void
+    public function forceDelete(int|string $id): void
     {
         $comment = Comment::onlyTrashed()->findOrFail($id);
         $comment->forceDelete();

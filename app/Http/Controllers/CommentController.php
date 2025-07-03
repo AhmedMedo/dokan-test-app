@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Repositories\CommentRepository;
-use App\Repositories\PostRepository;
+use App\Repositories\CommentRepositoryInterface;
+use App\Repositories\PostRepositoryInterface;
 use App\Http\Resources\CommentResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -14,10 +14,10 @@ class CommentController extends Controller
 {
     use AuthorizesRequests;
 
-    protected $comments;
-    protected $posts;
+    protected CommentRepositoryInterface $comments;
+    protected PostRepositoryInterface $posts;
 
-    public function __construct(CommentRepository $comments, PostRepository $posts)
+    public function __construct(CommentRepositoryInterface $comments, PostRepositoryInterface $posts)
     {
         $this->comments = $comments;
         $this->posts = $posts;

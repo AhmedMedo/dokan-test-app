@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Repositories\PostRepository;
-use App\Repositories\CategoryRepository;
+use App\Repositories\PostRepositoryInterface;
+use App\Repositories\CategoryRepositoryInterface;
 use App\Http\Resources\PostResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -14,10 +14,10 @@ class PostController extends Controller
 {
     use AuthorizesRequests;
 
-    protected $posts;
-    protected $categories;
+    protected PostRepositoryInterface $posts;
+    protected CategoryRepositoryInterface $categories;
 
-    public function __construct(PostRepository $posts, CategoryRepository $categories)
+    public function __construct(PostRepositoryInterface $posts, CategoryRepositoryInterface $categories)
     {
         $this->posts = $posts;
         $this->categories = $categories;
